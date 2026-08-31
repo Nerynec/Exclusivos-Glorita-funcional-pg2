@@ -24,7 +24,7 @@ export default function Sidebar() {
       <div className="sidebar-brand">
         <img src="/logo-glorita.png" alt="Exclusivos Glorita" className="brand-logo" />
         <div className="brand-name">Exclusivos Glorita</div>
-        <div className="brand-sub">Gestión artesanal</div>
+       
       </div>
 
       <nav className="sidebar-nav">
