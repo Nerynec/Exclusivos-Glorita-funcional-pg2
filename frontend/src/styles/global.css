@@ -1,9 +1,11 @@
+```css
 /* ============================================================
    Tokens de diseño — Exclusivos Glorita
    Paleta inspirada en el cuero curtido y la talabartería:
    tonos de cuaba, tabaco y bronce sobre un fondo cálido tipo
    papel/lienzo, con un dorado apagado como acento de "costura".
    ============================================================ */
+
 :root {
   /* Color */
   --bg: #F7F5F1;
@@ -29,15 +31,26 @@
   /* Layout */
   --sidebar-width: 240px;
   --radius: 10px;
-  --shadow: 0 1px 3px rgba(46, 32, 24, 0.08), 0 1px 2px rgba(46, 32, 24, 0.06);
+  --shadow: 0 1px 3px rgba(46, 32, 24, 0.08),
+    0 1px 2px rgba(46, 32, 24, 0.06);
   --shadow-md: 0 4px 16px rgba(46, 32, 24, 0.10);
 }
 
-* { box-sizing: border-box; }
 
-html, body {
+/* ============================================================
+   RESET GENERAL
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 body {
@@ -46,25 +59,43 @@ body {
   font-family: var(--font-body);
   font-size: 14.5px;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-#root { min-height: 100vh; }
+#root {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+}
 
-h1, h2, h3, h4 {
+
+/* ============================================================
+   TIPOGRAFÍA
+   ============================================================ */
+
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-display);
   color: var(--espresso);
   margin: 0 0 4px 0;
   font-weight: 600;
 }
 
-a { color: inherit; text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
 button {
   font-family: var(--font-body);
   cursor: pointer;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   font-family: var(--font-body);
   font-size: 14px;
 }
@@ -73,7 +104,11 @@ input, select, textarea {
   background: var(--saddle-light);
 }
 
-/* ---------- Utilidades ---------- */
+
+/* ============================================================
+   UTILIDADES — BOTONES
+   ============================================================ */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -85,23 +120,44 @@ input, select, textarea {
   border: 1px solid transparent;
   transition: all 0.15s ease;
 }
+
 .btn-primary {
   background: var(--saddle);
   color: #fff;
 }
-.btn-primary:hover { background: var(--saddle-dark); }
+
+.btn-primary:hover {
+  background: var(--saddle-dark);
+}
+
 .btn-secondary {
   background: var(--surface);
   color: var(--espresso);
   border-color: var(--border);
 }
-.btn-secondary:hover { border-color: var(--saddle); }
+
+.btn-secondary:hover {
+  border-color: var(--saddle);
+}
+
 .btn-danger {
   background: var(--danger-bg);
   color: var(--danger);
 }
-.btn-danger:hover { background: #f5d5cc; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-danger:hover {
+  background: #f5d5cc;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   TARJETAS
+   ============================================================ */
 
 .card {
   background: var(--surface);
@@ -109,6 +165,11 @@ input, select, textarea {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
+
+
+/* ============================================================
+   BADGES
+   ============================================================ */
 
 .badge {
   display: inline-flex;
@@ -118,11 +179,33 @@ input, select, textarea {
   font-size: 12px;
   font-weight: 600;
 }
-.badge-danger { background: var(--danger-bg); color: var(--danger); }
-.badge-success { background: var(--success-bg); color: var(--success); }
-.badge-neutral { background: var(--surface-muted); color: var(--espresso-soft); border: 1px solid var(--border); }
 
-table { border-collapse: collapse; width: 100%; }
+.badge-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.badge-success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.badge-neutral {
+  background: var(--surface-muted);
+  color: var(--espresso-soft);
+  border: 1px solid var(--border);
+}
+
+
+/* ============================================================
+   TABLAS
+   ============================================================ */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
 th {
   text-align: left;
   font-size: 12px;
@@ -132,28 +215,61 @@ th {
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);
 }
+
 td {
   padding: 12px 14px;
   border-bottom: 1px solid var(--border);
   font-size: 14px;
 }
-tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: var(--surface-muted); }
 
-.form-field { margin-bottom: 14px; display: flex; flex-direction: column; gap: 5px; }
-.form-field label { font-size: 13px; font-weight: 600; color: var(--espresso-soft); }
-.form-field input, .form-field select, .form-field textarea {
+tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: var(--surface-muted);
+}
+
+
+/* ============================================================
+   FORMULARIOS
+   ============================================================ */
+
+.form-field {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--espresso-soft);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
   padding: 9px 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
   color: var(--espresso);
 }
-.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
   outline: none;
   border-color: var(--saddle);
   box-shadow: 0 0 0 3px var(--saddle-light);
 }
+
+
+/* ============================================================
+   MINIATURAS
+   ============================================================ */
 
 .thumb {
   width: 40px;
@@ -164,12 +280,14 @@ tbody tr:hover { background: var(--surface-muted); }
   background: var(--surface-muted);
   flex-shrink: 0;
 }
+
 .thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
+
 .thumb-placeholder {
   width: 100%;
   height: 100%;
@@ -179,12 +297,24 @@ tbody tr:hover { background: var(--surface-muted); }
   color: var(--saddle-light);
   background: var(--surface-muted);
 }
-.thumb-lg { width: 56px; height: 56px; border-radius: 10px; }
 
-/* ---------- Catálogo de productos (vista de tarjetas) ---------- */
+.thumb-lg {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+}
+
+
+/* ============================================================
+   CATÁLOGO DE PRODUCTOS
+   ============================================================ */
+
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(210px, 1fr)
+  );
   gap: 18px;
 }
 
@@ -197,6 +327,7 @@ tbody tr:hover { background: var(--surface-muted); }
   display: flex;
   flex-direction: column;
 }
+
 .product-card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
@@ -211,12 +342,14 @@ tbody tr:hover { background: var(--surface-muted); }
   justify-content: center;
   overflow: hidden;
 }
+
 .product-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
+
 .product-image-placeholder {
   width: 100%;
   height: 100%;
@@ -225,7 +358,11 @@ tbody tr:hover { background: var(--surface-muted); }
   justify-content: center;
   color: var(--saddle-light);
 }
-.product-image-placeholder svg { width: 46px; height: 46px; }
+
+.product-image-placeholder svg {
+  width: 46px;
+  height: 46px;
+}
 
 .product-badge {
   position: absolute;
@@ -270,6 +407,7 @@ tbody tr:hover { background: var(--surface-muted); }
   font-size: 12px;
   color: var(--espresso-soft);
 }
+
 .product-talla strong {
   color: var(--espresso);
 }
@@ -287,6 +425,7 @@ tbody tr:hover { background: var(--surface-muted); }
   gap: 8px;
   margin-top: 10px;
 }
+
 .product-card-actions .btn {
   flex: 1;
   justify-content: center;
@@ -294,11 +433,21 @@ tbody tr:hover { background: var(--surface-muted); }
   font-size: 12.5px;
 }
 
+
+/* ============================================================
+   ESTADO VACÍO
+   ============================================================ */
+
 .empty-state {
   text-align: center;
   padding: 48px 24px;
   color: var(--espresso-soft);
 }
+
+
+/* ============================================================
+   SPINNER
+   ============================================================ */
 
 .spinner {
   width: 22px;
@@ -308,7 +457,17 @@ tbody tr:hover { background: var(--surface-muted); }
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ============================================================
+   TOAST
+   ============================================================ */
 
 .toast {
   position: fixed;
@@ -322,8 +481,19 @@ tbody tr:hover { background: var(--surface-muted); }
   z-index: 1000;
   font-size: 14px;
 }
-.toast.error { background: var(--danger); }
-.toast.success { background: var(--success); }
+
+.toast.error {
+  background: var(--danger);
+}
+
+.toast.success {
+  background: var(--success);
+}
+
+
+/* ============================================================
+   CARRITO
+   ============================================================ */
 
 .cart-badge {
   position: absolute;
@@ -343,12 +513,26 @@ tbody tr:hover { background: var(--surface-muted); }
   line-height: 1;
 }
 
-/* ---------- Comprobante de venta imprimible ---------- */
-.receipt-print-area { display: none; }
+
+/* ============================================================
+   COMPROBANTE DE VENTA IMPRIMIBLE
+   ============================================================ */
+
+.receipt-print-area {
+  display: none;
+}
 
 @media print {
-  body * { visibility: hidden; }
-  .receipt-print-area, .receipt-print-area * { visibility: visible; }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-print-area,
+  .receipt-print-area * {
+    visibility: visible;
+  }
+
   .receipt-print-area {
     display: block;
     position: absolute;
@@ -357,4 +541,505 @@ tbody tr:hover { background: var(--surface-muted); }
     width: 100%;
     padding: 24px;
   }
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   Adaptación sin eliminar contenido ni funcionalidades.
+   ============================================================ */
+
+
+/* ---------- Layout general ---------- */
+
+.app-layout {
+  width: 100%;
+  max-width: 100%;
+}
+
+.app-main {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.page-content {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.page-header {
+  max-width: 100%;
+}
+
+.page-header-info {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.page-actions {
+  max-width: 100%;
+}
+
+
+/* ============================================================
+   TABLET — hasta 1000px
+   ============================================================ */
+
+@media (max-width: 1000px) {
+
+  .app-main {
+    padding: 28px 24px !important;
+  }
+
+  .page-header {
+    gap: 14px !important;
+  }
+
+  .page-header h1 {
+    font-size: 23px !important;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(190px, 1fr)
+    );
+    gap: 14px;
+  }
+}
+
+
+/* ============================================================
+   CELULAR — hasta 768px
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* Layout */
+
+  .app-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 20px 16px !important;
+    overflow-x: hidden !important;
+  }
+
+  .page-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+
+  /* Encabezado */
+
+  .page-header {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+    margin-bottom: 22px !important;
+  }
+
+  .page-header-info {
+    width: 100%;
+  }
+
+  .page-header h1 {
+    font-size: 21px !important;
+    line-height: 1.3 !important;
+  }
+
+  .page-header-info p {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+
+  /* Botones superiores */
+
+  .page-actions {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .page-actions .btn {
+    min-height: 40px;
+  }
+
+
+  /* Botones generales */
+
+  .btn {
+    padding: 9px 13px;
+  }
+
+
+  /* Catálogo */
+
+  .product-grid {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+    gap: 12px;
+  }
+
+  .product-card-body {
+    padding: 11px 10px 13px;
+  }
+
+  .product-name {
+    font-size: 13px;
+  }
+
+  .product-price {
+    font-size: 17px;
+  }
+
+  .product-card-actions {
+    gap: 6px;
+  }
+
+  .product-card-actions .btn {
+    padding: 8px 6px;
+    font-size: 11.5px;
+  }
+
+
+  /* Tarjetas */
+
+  .card {
+    max-width: 100%;
+  }
+
+
+  /* Formularios */
+
+  .form-field {
+    width: 100%;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+
+  /* Tablas */
+
+  .table-container,
+  .table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /*
+     No se eliminan columnas.
+     La tabla conserva toda su información.
+  */
+
+  table {
+    min-width: 600px;
+  }
+
+
+  /* Miniaturas */
+
+  .thumb-lg {
+    width: 50px;
+    height: 50px;
+  }
+
+
+  /* Toast */
+
+  .toast {
+    left: 12px;
+    right: 12px;
+    bottom: 14px;
+    width: auto;
+    max-width: none;
+    text-align: center;
+  }
+
+
+  /* Estado vacío */
+
+  .empty-state {
+    padding: 36px 16px;
+  }
+
+
+  /* Gráficas */
+
+  .chart-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+}
+
+
+/* ============================================================
+   CELULAR PEQUEÑO — hasta 480px
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+  .app-main {
+    padding: 16px 12px !important;
+  }
+
+
+  /* Encabezado */
+
+  .page-header {
+    gap: 12px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .page-header h1 {
+    font-size: 20px !important;
+  }
+
+  .page-header-info p {
+    font-size: 12.5px !important;
+  }
+
+
+  /* Botones */
+
+  .page-actions {
+    gap: 7px !important;
+  }
+
+  .page-actions .btn {
+    font-size: 12.5px;
+    padding: 8px 10px;
+  }
+
+
+  /* Catálogo */
+
+  .product-grid {
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    );
+    gap: 10px;
+  }
+
+  .product-card-body {
+    padding: 10px 9px 11px;
+    gap: 4px;
+  }
+
+  .product-brand {
+    font-size: 10.5px;
+  }
+
+  .product-name {
+    font-size: 12px;
+    min-height: 34px;
+  }
+
+  .product-talla {
+    font-size: 11px;
+  }
+
+  .product-price {
+    font-size: 16px;
+  }
+
+  .product-card-actions {
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 7px;
+  }
+
+  .product-card-actions .btn {
+    width: 100%;
+    font-size: 11px;
+    padding: 7px 5px;
+  }
+
+  .product-badge {
+    top: 7px;
+    left: 7px;
+    font-size: 9px;
+    padding: 3px 7px;
+  }
+
+
+  /* Tablas */
+
+  table {
+    min-width: 550px;
+  }
+
+  th {
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+
+  td {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+
+  /* Formularios */
+
+  .form-field {
+    margin-bottom: 12px;
+  }
+
+  .form-field label {
+    font-size: 12px;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+
+
+  /* Botones generales */
+
+  .btn {
+    font-size: 13px;
+    padding: 9px 11px;
+  }
+
+
+  /* Toast */
+
+  .toast {
+    font-size: 13px;
+    padding: 11px 14px;
+  }
+
+}
+
+
+/* ============================================================
+   CELULARES MUY PEQUEÑOS — hasta 360px
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .app-main {
+    padding: 14px 9px !important;
+  }
+
+  .page-header h1 {
+    font-size: 19px !important;
+  }
+
+
+  /* Catálogo */
+
+  .product-grid {
+    gap: 8px;
+  }
+
+  .product-card-body {
+    padding: 8px;
+  }
+
+  .product-name {
+    font-size: 11.5px;
+  }
+
+  .product-price {
+    font-size: 15px;
+  }
+
+  .product-card-actions .btn {
+    font-size: 10.5px;
+  }
+
+
+  /* Botones */
+
+  .page-actions {
+    gap: 5px !important;
+  }
+
+  .page-actions .btn {
+    font-size: 11.5px;
+    padding: 8px;
+  }
+
+
+  /* Tablas */
+
+  table {
+    min-width: 520px;
+  }
+}
+
+
+/* ============================================================
+   IMÁGENES RESPONSIVE
+   ============================================================ */
+
+.page-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+/* ============================================================
+   PREVENIR DESBORDAMIENTO DE ELEMENTOS
+   ============================================================ */
+
+.page-content > * {
+  max-width: 100%;
+}
+
+.page-content input,
+.page-content select,
+.page-content textarea {
+  max-width: 100%;
+}
+
+
+/* ============================================================
+   CONTENEDORES DE GRÁFICAS
+   ============================================================ */
+
+.chart-container {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   BOTONES CÓMODOS PARA PANTALLAS TÁCTILES
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .page-content button {
+    min-height: 40px;
+  }
+
 }

@@ -17,7 +17,7 @@ const TABS = [
 function BotonExportar({ onClick, disabled }) {
   return (
     <button className="btn btn-secondary" onClick={onClick} disabled={disabled}>
-      ⬇ Exportar a Excel
+      ⬇ Descargar reporte en Excel
     </button>
   );
 }
