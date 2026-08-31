@@ -23,8 +23,7 @@ export default function Sidebar() {
     <aside className="sidebar">
       <div className="sidebar-brand">
         <img src="/logo-glorita.png" alt="Exclusivos Glorita" className="brand-logo" />
-        <div className="brand-name">Exclusivos Glorita</div>
-       
+        <div className="brand-name">Exclusivos Glorita San Lucas Toliman Solola</div>
       </div>
 
       <nav className="sidebar-nav">
