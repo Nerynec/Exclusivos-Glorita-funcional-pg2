@@ -47,9 +47,8 @@ export default function Sidebar() {
         <div className="sidebar-brand">
           <img src="/logo-glorita.png" alt="Exclusivos Glorita" className="brand-logo" />
           <div className="brand-name">Exclusivos Glorita</div>
-          <div className="brand-sub">Gestión artesanal</div>
+      
         </div>
-
         <nav className="sidebar-nav">
           {linksVisibles.map((link) => (
             <NavLink
@@ -94,7 +93,7 @@ export default function Sidebar() {
             {tema === 'oscuro' ? '☀️ Modo claro' : '🌙 Modo oscuro'}
           </button>
           <div className="sidebar-copyright">
-            © {new Date().getFullYear()} Exclusivos Glorita.<br />Todos los derechos reservados.
+            © {new Date().getFullYear()} Nery Orlando Martin Vasquez.<br />Todos los derechos reservados.
           </div>
         </div>
 
