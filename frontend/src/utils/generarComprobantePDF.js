@@ -1,6 +1,3 @@
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-
 const COBRE = [201, 124, 70];
 const TINTA = [42, 27, 16];
 const GRIS = [107, 92, 77];
@@ -26,6 +23,11 @@ function cargarImagenComoBase64(url) {
 // Genera el comprobante de una venta como PDF tamaño carta (215.9 x 279.4 mm)
 // y dispara la descarga directa en el navegador.
 export async function generarComprobantePDF(venta) {
+  // jsPDF pesa bastante — se importa recién acá, solo cuando de verdad se
+  // va a generar un comprobante, en vez de cargarse siempre con toda la app.
+  const { default: jsPDF } = await import('jspdf');
+  const { default: autoTable } = await import('jspdf-autotable');
+
   const items = venta.detalle || [];
   const doc = new jsPDF({ unit: 'mm', format: 'letter' });
   const margen = 18;

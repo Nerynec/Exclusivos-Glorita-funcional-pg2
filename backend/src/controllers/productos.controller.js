@@ -77,6 +77,9 @@ async function crear(req, res, next) {
     if (!codigo || !nombre) {
       return res.status(400).json({ mensaje: 'Código y nombre son obligatorios.' });
     }
+    if ((precioCosto && precioCosto < 0) || (precioVenta && precioVenta < 0) || (stockActual && stockActual < 0) || (stockMinimo && stockMinimo < 0)) {
+      return res.status(400).json({ mensaje: 'Los precios y las cantidades no pueden ser negativos.' });
+    }
 
     const pool = await getPool();
 
@@ -110,6 +113,10 @@ async function actualizar(req, res, next) {
       nombre, descripcion, categoriaId, marca, talla,
       precioCosto, precioVenta, stockMinimo, imagenUrl, activo,
     } = req.body;
+
+    if ((precioCosto && precioCosto < 0) || (precioVenta && precioVenta < 0) || (stockMinimo && stockMinimo < 0)) {
+      return res.status(400).json({ mensaje: 'Los precios y las cantidades no pueden ser negativos.' });
+    }
 
     const pool = await getPool();
     const result = await pool.query(`

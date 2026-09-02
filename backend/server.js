@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const errorHandler = require('./src/middleware/errorHandler');
 const authRoutes = require('./src/routes/auth.routes');
@@ -14,8 +16,28 @@ const usuariosRoutes = require('./src/routes/usuarios.routes');
 
 const app = express();
 
+// Cabeceras de seguridad HTTP estándar (protege contra clickjacking,
+// sniffing de tipo MIME, y otras cosas que el navegador revisa solo).
+app.use(helmet());
+
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json({ limit: '5mb' })); // las fotos de perfil viajan como base64
+
+if (!process.env.CORS_ORIGIN) {
+  console.warn('⚠️  CORS_ORIGIN no está configurado — la API acepta peticiones de cualquier origen. Configuralo antes de producción.');
+}
+
+// Límite de intentos de inicio de sesión: máximo 10 intentos cada 15
+// minutos por IP. Evita que alguien pruebe miles de contraseñas seguidas
+// contra una misma cuenta (ataque de fuerza bruta).
+const limitadorLogin = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { mensaje: 'Demasiados intentos de inicio de sesión. Esperá unos minutos e intentá de nuevo.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/auth/login', limitadorLogin);
 
 app.get('/api/health', (req, res) => {
   res.json({ estado: 'ok', servicio: 'Glorita API', fecha: new Date().toISOString() });

@@ -1,5 +1,3 @@
-import ExcelJS from 'exceljs';
-
 const COLOR_ENCABEZADO = 'FFC97C46'; // cobre — color principal de marca
 const COLOR_FRANJA = 'FFF7F2EA';     // franja alterna, crema muy suave
 const COLOR_BORDE = 'FFE7E0D3';
@@ -30,6 +28,10 @@ async function obtenerLogoBuffer() {
  * opciones: { nombreHoja, titulo }
  */
 export async function exportarExcel(nombreArchivo, columnas, filas, opciones = {}) {
+  // ExcelJS pesa bastante — se importa recién acá, solo cuando de verdad
+  // se va a generar un archivo, en vez de cargarse siempre con toda la app.
+  const ExcelJS = (await import('exceljs')).default;
+
   const { nombreHoja = 'Datos', titulo } = opciones;
 
   const workbook = new ExcelJS.Workbook();

@@ -37,6 +37,9 @@ async function crear(req, res, next) {
     if (!nombreCompleto || !correo || !contrasena || !roleId) {
       return res.status(400).json({ mensaje: 'Todos los campos son obligatorios.' });
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      return res.status(400).json({ mensaje: 'El correo electrónico no tiene un formato válido.' });
+    }
     if (contrasena.length < 6) {
       return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' });
     }
