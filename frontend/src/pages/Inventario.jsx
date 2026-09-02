@@ -65,7 +65,7 @@ export default function Inventario() {
   return (
     <AppLayout
       title="Inventario"
-      subtitle="Entradas, salidas y control de existencias"
+     
       actions={<button className="btn btn-primary" onClick={() => abrirModal('')}>+ Registrar movimiento</button>}
     >
       {stockBajo.length > 0 && (

@@ -195,7 +195,7 @@ export default function Productos() {
   return (
     <AppLayout
       title="Productos"
-      subtitle="Catálogo de artículos de cuero — alta, edición y búsqueda"
+     
       actions={esAdministrador && (
         <>
           <button className="btn btn-secondary" onClick={() => setModalCategorias(true)}>Categorías</button>

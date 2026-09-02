@@ -31,7 +31,7 @@ export default function Login() {
         <div className="login-brand">
           <img src="/logo-glorita.png" alt="Exclusivos Glorita" className="brand-logo-lg" />
           <h1>Exclusivos Glorita</h1>
-          <p>Sistema web de gestión — productos, inventario y ventas</p>
+          
         </div>
 
         <form className="login-form card" onSubmit={handleSubmit}>
@@ -76,7 +76,7 @@ export default function Login() {
         </form>
 
         <p style={{ fontSize: 11, color: '#C9B79E', marginTop: 20, textAlign: 'center' }}>
-          © {new Date().getFullYear()} Exclusivos Glorita. Todos los derechos reservados.
+          © {new Date().getFullYear()} Nery Orlando Martin Vasquez. Todos los derechos reservados.
         </p>
       </div>
     </div>

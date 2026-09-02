@@ -89,7 +89,7 @@ export default function Reportes() {
   }
 
   return (
-    <AppLayout title="Reportes" subtitle="Ventas, inventario y desempeño de productos para apoyar la toma de decisiones">
+    <AppLayout title="Reportes" subtitle="">
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, borderBottom: '1px solid var(--border)' }}>
         {TABS.map((t) => (
           <button
