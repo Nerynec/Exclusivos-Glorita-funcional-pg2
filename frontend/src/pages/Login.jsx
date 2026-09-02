@@ -30,7 +30,8 @@ export default function Login() {
       <div className="login-panel">
         <div className="login-brand">
           <img src="/logo-glorita.png" alt="Exclusivos Glorita" className="brand-logo-lg" />
-          <h1>Exclusivos Glorita San Lucas Toliman Solola</h1>
+          <h1>Exclusivos Glorita</h1>
+          <p>Sistema web de gestión — productos, inventario y ventas</p>
         </div>
 
         <form className="login-form card" onSubmit={handleSubmit}>

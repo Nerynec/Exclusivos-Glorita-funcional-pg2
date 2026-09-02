@@ -164,7 +164,7 @@ export default function Ventas() {
           <input value={clienteNombre} onChange={(e) => setClienteNombre(e.target.value)} placeholder="Consumidor final" />
         </div>
 
-        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', marginBottom: 16, flexWrap: 'wrap' }}>
           <div className="form-field" style={{ flex: 1, marginBottom: 0 }}>
             <label>Producto</label>
             <select value={productoSeleccionado} onChange={(e) => setProductoSeleccionado(e.target.value)}>

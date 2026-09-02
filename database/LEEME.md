@@ -10,4 +10,3 @@
   solo como referencia histórica / por si en algún momento volvés a correr
   el sistema con SQL Server en vez de Supabase. **No los uses junto con
   Supabase**, son para motores distintos.
-  

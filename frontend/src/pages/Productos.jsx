@@ -269,7 +269,7 @@ export default function Productos() {
 
       <Modal open={modalAbierto} onClose={() => setModalAbierto(false)} title={editando ? 'Editar producto' : 'Nuevo producto'} width={520}>
         <form onSubmit={handleSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-grid-2col">
             <div className="form-field">
               <label>Código</label>
               <input value={form.codigo} onChange={(e) => setForm({ ...form, codigo: e.target.value })} required disabled={!!editando} />
@@ -334,7 +334,7 @@ export default function Productos() {
             </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-grid-2col">
             <div className="form-field">
               <label>Precio de costo (Q)</label>
               <input type="number" step="0.01" min="0" value={form.precioCosto} onChange={(e) => setForm({ ...form, precioCosto: e.target.value })} required />
@@ -345,7 +345,7 @@ export default function Productos() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-grid-2col">
             <div className="form-field">
               <label>Stock inicial</label>
               <input type="number" min="0" value={form.stockActual} onChange={(e) => setForm({ ...form, stockActual: e.target.value })} required disabled={!!editando} />

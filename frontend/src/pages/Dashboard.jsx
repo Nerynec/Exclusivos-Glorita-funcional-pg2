@@ -61,7 +61,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 20, marginBottom: 20 }}>
+          <div className="dashboard-charts-grid" style={{ gap: 20, marginBottom: 20 }}>
             <div className="card" style={{ padding: 22 }}>
               <h3 style={{ fontSize: 16, marginBottom: 16 }}>Ventas — últimos 7 días</h3>
               {ventasChart.length === 0 ? (

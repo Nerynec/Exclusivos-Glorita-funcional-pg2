@@ -1,1 +1,395 @@
-:root { /* Color */ --bg: #F7F5F1; --surface: #FFFFFF; --surface-muted: #F3EFE8; --espresso: #2A1B10; --espresso-soft: #6B5C4D; --saddle: #C97C46; --saddle-dark: #A8632F; --saddle-light: #F3DBBE; --stitch: #852A25; --border: #E7E0D3; --danger: #D64545; --danger-bg: #FBE3E1; --success: #2E9E5B; --success-bg: #E1F5EA; --info: #21808A; /* Tipografía */ --font-display: 'Fraunces', Georgia, serif; --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* Layout */ --sidebar-width: 240px; --radius: 10px; --shadow: 0 1px 3px rgba(46, 32, 24, 0.08), 0 1px 2px rgba(46, 32, 24, 0.06); --shadow-md: 0 4px 16px rgba(46, 32, 24, 0.10); } * { box-sizing: border-box; } html, body { margin: 0; padding: 0; } body { background: var(--bg); color: var(--espresso); font-family: var(--font-body); font-size: 14.5px; -webkit-font-smoothing: antialiased; } #root { min-height: 100vh; } h1, h2, h3, h4 { font-family: var(--font-display); color: var(--espresso); margin: 0 0 4px 0; font-weight: 600; } a { color: inherit; text-decoration: none; } button { font-family: var(--font-body); cursor: pointer; } input, select, textarea { font-family: var(--font-body); font-size: 14px; } ::selection { background: var(--saddle-light); } /* ---------- Utilidades ---------- */ .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; padding: 9px 16px; font-size: 14px; font-weight: 600; border: 1px solid transparent; transition: all 0.15s ease; } .btn-primary { background: var(--saddle); color: #fff; } .btn-primary:hover { background: var(--saddle-dark); } .btn-secondary { background: var(--surface); color: var(--espresso); border-color: var(--border); } .btn-secondary:hover { border-color: var(--saddle); } .btn-danger { background: var(--danger-bg); color: var(--danger); } .btn-danger:hover { background: #f5d5cc; } .btn:disabled { opacity: 0.5; cursor: not-allowed; } .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); } .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; } .badge-danger { background: var(--danger-bg); color: var(--danger); } .badge-success { background: var(--success-bg); color: var(--success); } .badge-neutral { background: var(--surface-muted); color: var(--espresso-soft); border: 1px solid var(--border); } table { border-collapse: collapse; width: 100%; } th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--espresso-soft); padding: 10px 14px; border-bottom: 1px solid var(--border); } td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; } tr:last-child td { border-bottom: none; } tbody tr:hover { background: var(--surface-muted); } .form-field { margin-bottom: 14px; display: flex; flex-direction: column; gap: 5px; } .form-field label { font-size: 13px; font-weight: 600; color: var(--espresso-soft); } .form-field input, .form-field select, .form-field textarea { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--espresso); } .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--saddle); box-shadow: 0 0 0 3px var(--saddle-light); } .thumb { width: 40px; height: 40px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-muted); flex-shrink: 0; } .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; } .thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--saddle-light); background: var(--surface-muted); } .thumb-lg { width: 56px; height: 56px; border-radius: 10px; } /* ---------- Catálogo de productos (vista de tarjetas) ---------- */ .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; } .product-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: box-shadow 0.15s ease, transform 0.15s ease; display: flex; flex-direction: column; } .product-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); } .product-card-image { position: relative; aspect-ratio: 1 / 1; background: var(--surface-muted); display: flex; align-items: center; justify-content: center; overflow: hidden; } .product-card-image img { width: 100%; height: 100%; object-fit: cover; display: block; } .product-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--saddle-light); } .product-image-placeholder svg { width: 46px; height: 46px; } .product-badge { position: absolute; top: 10px; left: 10px; background: var(--danger); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.01em; } .product-card-body { padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 5px; } .product-brand { font-size: 12px; color: var(--espresso-soft); text-decoration: underline; text-underline-offset: 2px; } .product-name { font-size: 14px; font-weight: 500; color: var(--espresso); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; } .product-talla { font-size: 12px; color: var(--espresso-soft); } .product-talla strong { color: var(--espresso); } .product-price { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--saddle-dark); margin: 2px 0 3px; } .product-card-actions { display: flex; gap: 8px; margin-top: 10px; } .product-card-actions .btn { flex: 1; justify-content: center; padding: 7px 10px; font-size: 12.5px; } .empty-state { text-align: center; padding: 48px 24px; color: var(--espresso-soft); } .spinner { width: 22px; height: 22px; border: 3px solid var(--saddle-light); border-top-color: var(--saddle); border-radius: 50%; animation: spin 0.7s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } } .toast { position: fixed; bottom: 24px; right: 24px; background: var(--espresso); color: #fff; padding: 12px 18px; border-radius: 8px; box-shadow: var(--shadow-md); z-index: 1000; font-size: 14px; } .toast.error { background: var(--danger); } .toast.success { background: var(--success); } .cart-badge { position: absolute; top: -7px; right: -7px; background: var(--danger); color: #fff; border-radius: 999px; min-width: 19px; height: 19px; padding: 0 5px; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; line-height: 1; } /* ---------- Comprobante de venta imprimible ---------- */ .receipt-print-area { display: none; } @media print { body * { visibility: hidden; } .receipt-print-area, .receipt-print-area * { visibility: visible; } .receipt-print-area { display: block; position: absolute; top: 0; left: 0; width: 100%; padding: 24px; } }
+/* ============================================================
+   Tokens de diseño — Exclusivos Glorita
+   Paleta inspirada en el cuero curtido y la talabartería:
+   tonos de cuaba, tabaco y bronce sobre un fondo cálido tipo
+   papel/lienzo, con un dorado apagado como acento de "costura".
+   ============================================================ */
+:root {
+  /* Color */
+  --bg: #F7F5F1;
+  --surface: #FFFFFF;
+  --surface-muted: #F3EFE8;
+  --espresso: #2A1B10;
+  --espresso-soft: #6B5C4D;
+  --saddle: #C97C46;
+  --saddle-dark: #A8632F;
+  --saddle-light: #F3DBBE;
+  --stitch: #852A25;
+  --border: #E7E0D3;
+  --danger: #D64545;
+  --danger-bg: #FBE3E1;
+  --success: #2E9E5B;
+  --success-bg: #E1F5EA;
+  --info: #21808A;
+
+  /* Tipografía */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(46, 32, 24, 0.08), 0 1px 2px rgba(46, 32, 24, 0.06);
+  --shadow-md: 0 4px 16px rgba(46, 32, 24, 0.10);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--espresso);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root { min-height: 100vh; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--espresso);
+  margin: 0 0 4px 0;
+  font-weight: 600;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+::selection {
+  background: var(--saddle-light);
+}
+
+/* ---------- Utilidades ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+.btn-primary {
+  background: var(--saddle);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--saddle-dark); }
+.btn-secondary {
+  background: var(--surface);
+  color: var(--espresso);
+  border-color: var(--border);
+}
+.btn-secondary:hover { border-color: var(--saddle); }
+.btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.btn-danger:hover { background: #f5d5cc; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-danger { background: var(--danger-bg); color: var(--danger); }
+.badge-success { background: var(--success-bg); color: var(--success); }
+.badge-neutral { background: var(--surface-muted); color: var(--espresso-soft); border: 1px solid var(--border); }
+
+table { border-collapse: collapse; width: 100%; }
+th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--espresso-soft);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--surface-muted); }
+
+.form-field { margin-bottom: 14px; display: flex; flex-direction: column; gap: 5px; }
+.form-field label { font-size: 13px; font-weight: 600; color: var(--espresso-soft); }
+.form-field input, .form-field select, .form-field textarea {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--espresso);
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+  outline: none;
+  border-color: var(--saddle);
+  box-shadow: 0 0 0 3px var(--saddle-light);
+}
+
+.thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  flex-shrink: 0;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--saddle-light);
+  background: var(--surface-muted);
+}
+.thumb-lg { width: 56px; height: 56px; border-radius: 10px; }
+
+/* ---------- Catálogo de productos (vista de tarjetas) ---------- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  display: flex;
+  flex-direction: column;
+}
+.product-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.product-card-image {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--surface-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.product-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.product-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--saddle-light);
+}
+.product-image-placeholder svg { width: 46px; height: 46px; }
+
+.product-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.01em;
+}
+
+.product-card-body {
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.product-brand {
+  font-size: 12px;
+  color: var(--espresso-soft);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.product-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--espresso);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 38px;
+}
+
+.product-talla {
+  font-size: 12px;
+  color: var(--espresso-soft);
+}
+.product-talla strong {
+  color: var(--espresso);
+}
+
+.product-price {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--saddle-dark);
+  margin: 2px 0 3px;
+}
+
+.product-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.product-card-actions .btn {
+  flex: 1;
+  justify-content: center;
+  padding: 7px 10px;
+  font-size: 12.5px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--espresso-soft);
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--saddle-light);
+  border-top-color: var(--saddle);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--espresso);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  font-size: 14px;
+}
+.toast.error { background: var(--danger); }
+.toast.success { background: var(--success); }
+
+/* ---------- Layout principal responsivo ---------- */
+.app-main {
+  flex: 1;
+  padding: 32px 40px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 900px) {
+  .app-main {
+    padding: 72px 16px 24px; /* el padding-top deja espacio para el botón ☰ fijo */
+  }
+}
+
+.dashboard-charts-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+}
+@media (max-width: 900px) {
+  .dashboard-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 520px) {
+  .form-grid-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cart-badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  background: var(--danger);
+  color: #fff;
+  border-radius: 999px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ---------- Comprobante de venta imprimible ---------- */
+.receipt-print-area { display: none; }
+
+@media print {
+  body * { visibility: hidden; }
+  .receipt-print-area, .receipt-print-area * { visibility: visible; }
+  .receipt-print-area {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 24px;
+  }
+}
