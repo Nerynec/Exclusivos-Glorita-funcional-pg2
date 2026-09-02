@@ -74,6 +74,10 @@ export default function Login() {
             Usuario de prueba: <strong>admin@glorita.com</strong> · Contraseña: <strong>Glorita2026*</strong>
           </p>
         </form>
+
+        <p style={{ fontSize: 11, color: '#C9B79E', marginTop: 20, textAlign: 'center' }}>
+          © {new Date().getFullYear()} Exclusivos Glorita. Todos los derechos reservados.
+        </p>
       </div>
     </div>
   );

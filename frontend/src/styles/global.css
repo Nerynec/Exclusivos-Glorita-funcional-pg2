@@ -33,6 +33,31 @@
   --shadow-md: 0 4px 16px rgba(46, 32, 24, 0.10);
 }
 
+/* ============================================================
+   MODO OSCURO — se activa poniendo data-tema="oscuro" en <html>
+   (lo hace ThemeContext). Como todo el sistema usa estas variables,
+   cambiarlas acá alcanza para que TODA la app cambie de tema.
+   ============================================================ */
+:root[data-tema="oscuro"] {
+  --bg: #17130F;
+  --surface: #221C16;
+  --surface-muted: #2C241C;
+  --espresso: #F0E8DE;
+  --espresso-soft: #B7A996;
+  --saddle: #E0995F;
+  --saddle-dark: #C97C46;
+  --saddle-light: #4A3624;
+  --stitch: #C96259;
+  --border: #3B3225;
+  --danger: #E37069;
+  --danger-bg: #4A2420;
+  --success: #5CC98B;
+  --success-bg: #1E3A2A;
+  --info: #4FB8C4;
+  --shadow: 0 1px 3px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.45);
+}
+
 * { box-sizing: border-box; }
 
 html, body {
@@ -46,6 +71,7 @@ body {
   font-family: var(--font-body);
   font-size: 14.5px;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #root { min-height: 100vh; }

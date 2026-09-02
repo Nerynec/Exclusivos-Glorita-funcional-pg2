@@ -142,6 +142,15 @@
   color: var(--espresso-soft);
 }
 
+.sidebar-copyright {
+  margin-top: 12px;
+  font-size: 10.5px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--espresso-soft);
+  opacity: 0.75;
+}
+
 /* ============================================================
    RESPONSIVO — celular y tablet angosta (menú tipo hamburguesa)
    ============================================================ */

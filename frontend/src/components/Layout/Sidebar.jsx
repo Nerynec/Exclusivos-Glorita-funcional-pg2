@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTema } from '../../context/ThemeContext';
 import PerfilModal from '../UI/PerfilModal';
 import './Sidebar.css';
 
@@ -15,6 +16,7 @@ const links = [
 
 export default function Sidebar() {
   const { usuario, logout, esAdministrador } = useAuth();
+  const { tema, alternarTema } = useTema();
   const [modalPerfil, setModalPerfil] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const location = useLocation();
@@ -84,6 +86,16 @@ export default function Sidebar() {
           <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }} onClick={logout}>
             Cerrar sesión
           </button>
+          <button
+            className="btn btn-secondary"
+            style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}
+            onClick={alternarTema}
+          >
+            {tema === 'oscuro' ? '☀️ Modo claro' : '🌙 Modo oscuro'}
+          </button>
+          <div className="sidebar-copyright">
+            © {new Date().getFullYear()} Exclusivos Glorita.<br />Todos los derechos reservados.
+          </div>
         </div>
 
         <PerfilModal open={modalPerfil} onClose={() => setModalPerfil(false)} />

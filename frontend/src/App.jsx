@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CarritoProvider } from './context/CarritoContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 
 // Cada página se carga solo cuando el usuario entra a esa sección, en vez
@@ -25,20 +26,22 @@ function CargandoPagina() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CarritoProvider>
-        <Suspense fallback={<CargandoPagina />}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/productos" element={<ProtectedRoute><Productos /></ProtectedRoute>} />
-            <Route path="/inventario" element={<ProtectedRoute soloAdmin><Inventario /></ProtectedRoute>} />
-            <Route path="/ventas" element={<ProtectedRoute><Ventas /></ProtectedRoute>} />
-            <Route path="/reportes" element={<ProtectedRoute soloAdmin><Reportes /></ProtectedRoute>} />
-            <Route path="/usuarios" element={<ProtectedRoute soloAdmin><Usuarios /></ProtectedRoute>} />
-          </Routes>
-        </Suspense>
-      </CarritoProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CarritoProvider>
+          <Suspense fallback={<CargandoPagina />}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/productos" element={<ProtectedRoute><Productos /></ProtectedRoute>} />
+              <Route path="/inventario" element={<ProtectedRoute soloAdmin><Inventario /></ProtectedRoute>} />
+              <Route path="/ventas" element={<ProtectedRoute><Ventas /></ProtectedRoute>} />
+              <Route path="/reportes" element={<ProtectedRoute soloAdmin><Reportes /></ProtectedRoute>} />
+              <Route path="/usuarios" element={<ProtectedRoute soloAdmin><Usuarios /></ProtectedRoute>} />
+            </Routes>
+          </Suspense>
+        </CarritoProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
