@@ -70,9 +70,7 @@ export default function Login() {
             {cargando ? 'Ingresando...' : 'Ingresar'}
           </button>
 
-          <p style={{ fontSize: 12.5, color: 'var(--espresso-soft)', marginTop: 16, textAlign: 'center' }}>
-            Usuario de prueba: <strong>admin@glorita.com</strong> · Contraseña: <strong>Glorita2026*</strong>
-          </p>
+      
         </form>
 
         <p style={{ fontSize: 11, color: '#C9B79E', marginTop: 20, textAlign: 'center' }}>
