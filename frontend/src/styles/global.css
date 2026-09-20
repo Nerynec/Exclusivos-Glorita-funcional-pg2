@@ -367,9 +367,14 @@ tbody tr:hover { background: var(--surface-muted); }
 
 .dashboard-charts-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr;
 }
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
+  .dashboard-charts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 700px) {
   .dashboard-charts-grid {
     grid-template-columns: 1fr;
   }
