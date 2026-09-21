@@ -25,6 +25,18 @@ function formatearFechaCorta(fecha) {
   return new Date(fecha).toLocaleDateString('es-GT', { day: '2-digit', month: 'short', timeZone: 'UTC' });
 }
 
+function formatearFechaHora(fecha) {
+  return new Date(fecha).toLocaleString('es-GT', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' });
+}
+
+// El resumen de productos de una venta puede ser largo si llevó varios
+// artículos distintos; se recorta para que la tabla no se deforme, igual
+// que ya se hace con los nombres del gráfico de productos más vendidos.
+function truncarResumen(texto, limite = 42) {
+  if (!texto) return '';
+  return texto.length > limite ? `${texto.slice(0, limite)}…` : texto;
+}
+
 // Tooltip a medida: el valor va primero y con más peso visual que la
 // etiqueta (el lector ya sabe qué serie es, quiere el número), y usa los
 // mismos tokens de color que el resto de la app para respetar el tema
@@ -123,16 +135,19 @@ export default function Dashboard() {
     unidades: p.UnidadesVendidas,
   }));
 
-  // Salud de inventario: qué proporción del catálogo activo está dentro
-  // de su mínimo de stock vs. cuántos ya están por debajo — el mismo dato
-  // que ya mostraba la tarjeta "Stock bajo", pero como proporción del total.
+  // Salud de inventario: qué proporción del catálogo activo está en cada
+  // situación de stock. Se distinguen tres estados en vez de dos, para que
+  // coincida con las tarjetas "Stock bajo" y "Agotados" de arriba (antes
+  // "agotado" quedaba mezclado dentro de "stock bajo").
   const totalProductos = datos?.TotalProductos || 0;
   const stockBajoCount = datos?.ProductosStockBajo || 0;
-  const stockSaludable = Math.max(totalProductos - stockBajoCount, 0);
+  const agotadosCount = datos?.ProductosAgotados || 0;
+  const stockSaludable = Math.max(totalProductos - stockBajoCount - agotadosCount, 0);
   const pctSaludable = totalProductos > 0 ? Math.round((stockSaludable / totalProductos) * 100) : 100;
   const saludData = [
     { name: 'Stock saludable', value: stockSaludable, color: 'var(--success)' },
-    { name: 'Stock bajo', value: stockBajoCount, color: 'var(--danger)' },
+    { name: 'Stock bajo', value: stockBajoCount, color: 'var(--warning)' },
+    { name: 'Agotado', value: agotadosCount, color: 'var(--danger)' },
   ].filter((d) => d.value > 0);
 
   // Variación de ventas vs. el mes anterior: la métrica que realmente
@@ -157,7 +172,10 @@ export default function Dashboard() {
 
       {datos && (
         <>
-          <div className="dashboard-stats-row" style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 24 }}>
+          <div
+            className="dashboard-stats-row"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}
+          >
             <StatCard
               label="Ventas de hoy"
               value={datos.VentasHoy}
@@ -187,8 +205,14 @@ export default function Dashboard() {
             <StatCard
               label="Stock bajo"
               value={datos.ProductosStockBajo}
-              hint="productos bajo el mínimo"
+              hint="por debajo del mínimo"
               tone={datos.ProductosStockBajo > 0 ? 'danger' : 'success'}
+            />
+            <StatCard
+              label="Agotados"
+              value={datos.ProductosAgotados}
+              hint="sin unidades disponibles"
+              tone={datos.ProductosAgotados > 0 ? 'danger' : 'success'}
             />
           </div>
 
@@ -326,8 +350,12 @@ export default function Dashboard() {
                       Saludable: {stockSaludable}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--espresso-soft)' }}>
+                      <span style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--warning)', display: 'inline-block' }} />
+                      Bajo: {stockBajoCount}
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--espresso-soft)' }}>
                       <span style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--danger)', display: 'inline-block' }} />
-                      Stock bajo: {stockBajoCount}
+                      Agotado: {agotadosCount}
                     </span>
                   </div>
                 </>
@@ -335,26 +363,57 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="card" style={{ padding: 22 }}>
-            <h3 style={{ fontSize: 16, marginBottom: 14 }}>Alertas de stock bajo</h3>
-            {datos.stockBajo.length === 0 ? (
-              <div className="empty-state">Todos los productos tienen stock suficiente.</div>
-            ) : (
-              <table>
-                <thead>
-                  <tr><th>Producto</th><th>Stock actual</th><th>Stock mínimo</th></tr>
-                </thead>
-                <tbody>
-                  {datos.stockBajo.map((p) => (
-                    <tr key={p.Nombre}>
-                      <td>{p.Nombre}</td>
-                      <td style={{ fontVariantNumeric: 'tabular-nums' }}><span className="badge badge-danger">{p.StockActual}</span></td>
-                      <td style={{ fontVariantNumeric: 'tabular-nums' }}>{p.StockMinimo}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+          <div className="dashboard-bottom-grid" style={{ gap: 20 }}>
+            <div className="card" style={{ padding: 22 }}>
+              <h3 style={{ fontSize: 16, marginBottom: 14 }}>Alertas de inventario</h3>
+              {datos.alertasInventario.length === 0 ? (
+                <div className="empty-state">Todos los productos tienen stock suficiente.</div>
+              ) : (
+                <table>
+                  <thead>
+                    <tr><th>Producto</th><th>Estado</th><th>Stock actual</th><th>Stock mínimo</th></tr>
+                  </thead>
+                  <tbody>
+                    {datos.alertasInventario.map((p) => (
+                      <tr key={p.Nombre}>
+                        <td>{p.Nombre}</td>
+                        <td>
+                          <span className={`badge ${p.TipoAlerta === 'Agotado' ? 'badge-danger' : 'badge-warning'}`}>
+                            {p.TipoAlerta}
+                          </span>
+                        </td>
+                        <td style={{ fontVariantNumeric: 'tabular-nums' }}>{p.StockActual}</td>
+                        <td style={{ fontVariantNumeric: 'tabular-nums' }}>{p.StockMinimo}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            <div className="card" style={{ padding: 22 }}>
+              <h3 style={{ fontSize: 16, marginBottom: 14 }}>Últimas ventas</h3>
+              {datos.ultimasVentas.length === 0 ? (
+                <div className="empty-state">Aún no hay ventas registradas.</div>
+              ) : (
+                <table>
+                  <thead>
+                    <tr><th>Venta</th><th>Fecha</th><th>Productos</th><th>Cant.</th><th>Total</th></tr>
+                  </thead>
+                  <tbody>
+                    {datos.ultimasVentas.map((v) => (
+                      <tr key={v.VentaId}>
+                        <td>{v.NumeroVenta}</td>
+                        <td>{formatearFechaHora(v.FechaVenta)}</td>
+                        <td title={v.ResumenProductos}>{truncarResumen(v.ResumenProductos)}</td>
+                        <td style={{ fontVariantNumeric: 'tabular-nums' }}>{v.CantidadTotal}</td>
+                        <td style={{ fontVariantNumeric: 'tabular-nums' }}>{formatearMoneda(v.Total)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </>
       )}

@@ -21,6 +21,8 @@
   --success: #2E9E5B;
   --success-bg: #E1F5EA;
   --info: #21808A;
+  --warning: #B8781E;
+  --warning-bg: #FBEBD3;
 
   /* Tipografía */
   --font-display: 'Fraunces', Georgia, serif;
@@ -54,6 +56,8 @@
   --success: #5CC98B;
   --success-bg: #1E3A2A;
   --info: #4FB8C4;
+  --warning: #E0A94F;
+  --warning-bg: #3D2E14;
   --shadow: 0 1px 3px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 20px rgba(0,0,0,0.45);
 }
@@ -146,6 +150,7 @@ input, select, textarea {
 }
 .badge-danger { background: var(--danger-bg); color: var(--danger); }
 .badge-success { background: var(--success-bg); color: var(--success); }
+.badge-warning { background: var(--warning-bg); color: var(--warning); }
 .badge-neutral { background: var(--surface-muted); color: var(--espresso-soft); border: 1px solid var(--border); }
 
 table { border-collapse: collapse; width: 100%; }
@@ -380,6 +385,18 @@ tbody tr:hover { background: var(--surface-muted); }
   }
 }
 
+/* Fila inferior del Panel general: alertas de inventario + últimas ventas,
+   una junto a otra en pantallas anchas y apiladas en móvil. */
+.dashboard-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 900px) {
+  .dashboard-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Tarjetas de estadística del Panel general: una elevación sutil al pasar
    el mouse (con sombra "teñida" del mismo tono cálido de --shadow, no un
    negro genérico) y una entrada escalonada al cargar la página. Solo en
@@ -403,6 +420,7 @@ tbody tr:hover { background: var(--surface-muted); }
   .dashboard-stats-row .stat-card:nth-child(3) { animation-delay: 80ms; }
   .dashboard-stats-row .stat-card:nth-child(4) { animation-delay: 120ms; }
   .dashboard-stats-row .stat-card:nth-child(5) { animation-delay: 160ms; }
+  .dashboard-stats-row .stat-card:nth-child(6) { animation-delay: 200ms; }
 }
 @keyframes statCardEntrada {
   from { opacity: 0; transform: translateY(8px); }
