@@ -208,7 +208,7 @@ export default function Productos() {
   return (
     <AppLayout
       title="Productos"
-     
+      subtitle="Catálogo y control de precios"
       actions={esAdministrador && (
         <>
           <button className="btn btn-secondary" onClick={() => setModalCategorias(true)}>Categorías</button>
@@ -246,7 +246,19 @@ export default function Productos() {
 
       <div className={cargando || productos.length === 0 ? 'card' : ''} style={cargando || productos.length === 0 ? { overflowX: 'auto' } : undefined}>
         {cargando ? (
-          <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>
+          <div className="product-grid" style={{ padding: 18 }} aria-busy="true" aria-label="Cargando productos">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="product-card">
+                <div className="skeleton" style={{ aspectRatio: '1 / 1', borderRadius: 0 }} />
+                <div className="product-card-body">
+                  <div className="skeleton" style={{ width: '40%', height: 10 }} />
+                  <div className="skeleton" style={{ width: '85%', height: 13, marginTop: 4 }} />
+                  <div className="skeleton" style={{ width: '55%', height: 18, marginTop: 6 }} />
+                  <div className="skeleton" style={{ width: '100%', height: 32, marginTop: 8, borderRadius: 8 }} />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : productos.length === 0 ? (
           <div className="empty-state">No se encontraron productos con esos criterios.</div>
         ) : (

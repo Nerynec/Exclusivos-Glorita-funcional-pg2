@@ -3,6 +3,7 @@ import AppLayout from '../components/Layout/AppLayout';
 import Modal from '../components/UI/Modal';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import SkeletonTabla from '../components/UI/SkeletonTabla';
 
 const USUARIO_VACIO = { nombreCompleto: '', correo: '', contrasena: '', roleId: '' };
 
@@ -102,7 +103,7 @@ export default function Usuarios() {
     >
       <div className="card" style={{ overflowX: 'auto' }}>
         {cargando ? (
-          <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>
+          <SkeletonTabla columnas={['8%', '24%', '26%', '16%', '12%', '10%']} />
         ) : (
           <table>
             <thead>

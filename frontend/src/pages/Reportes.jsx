@@ -3,6 +3,7 @@ import AppLayout from '../components/Layout/AppLayout';
 import StatCard from '../components/UI/StatCard';
 import api from '../api/axios';
 import { exportarExcel } from '../utils/exportarExcel';
+import SkeletonTabla from '../components/UI/SkeletonTabla';
 
 function formatearMoneda(valor) {
   return new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'GTQ' }).format(valor || 0);
@@ -89,7 +90,7 @@ export default function Reportes() {
   }
 
   return (
-    <AppLayout title="Reportes" subtitle="">
+    <AppLayout title="Reportes" subtitle="Ventas, inventario y productos más vendidos">
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, borderBottom: '1px solid var(--border)' }}>
         {TABS.map((t) => (
           <button
@@ -107,7 +108,11 @@ export default function Reportes() {
         ))}
       </div>
 
-      {cargando && <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>}
+      {cargando && (
+        <div className="card" style={{ overflowX: 'auto' }}>
+          <SkeletonTabla columnas={['30%', '25%', '20%']} />
+        </div>
+      )}
 
       {!cargando && tab === 'ventas' && reporteVentas && (
         <>

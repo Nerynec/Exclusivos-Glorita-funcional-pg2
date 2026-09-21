@@ -5,6 +5,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useCarrito } from '../context/CarritoContext';
 import { generarComprobantePDF } from '../utils/generarComprobantePDF';
+import SkeletonTabla from '../components/UI/SkeletonTabla';
 
 export default function Ventas() {
   const { esAdministrador } = useAuth();
@@ -130,7 +131,7 @@ export default function Ventas() {
     >
       <div className="card" style={{ overflowX: 'auto' }}>
         {cargando ? (
-          <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>
+          <SkeletonTabla columnas={['14%', '22%', '20%', '18%', '12%', '14%']} />
         ) : ventas.length === 0 ? (
           <div className="empty-state">Todavía no hay ventas registradas.</div>
         ) : (

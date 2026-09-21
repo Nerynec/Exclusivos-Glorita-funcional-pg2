@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import AppLayout from '../components/Layout/AppLayout';
 import Modal from '../components/UI/Modal';
 import api from '../api/axios';
+import SkeletonTabla from '../components/UI/SkeletonTabla';
 
 export default function Inventario() {
   const [movimientos, setMovimientos] = useState([]);
@@ -65,7 +66,7 @@ export default function Inventario() {
   return (
     <AppLayout
       title="Inventario"
-     
+      subtitle="Entradas, salidas y niveles de stock"
       actions={<button className="btn btn-primary" onClick={() => abrirModal('')}>+ Registrar movimiento</button>}
     >
       {stockBajo.length > 0 && (
@@ -92,7 +93,7 @@ export default function Inventario() {
           <h3 style={{ fontSize: 16 }}>Historial de movimientos</h3>
         </div>
         {cargando ? (
-          <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>
+          <SkeletonTabla columnas={['16%', '24%', '12%', '10%', '14%', '16%', '12%']} />
         ) : movimientos.length === 0 ? (
           <div className="empty-state">Todavía no hay movimientos de inventario registrados.</div>
         ) : (
