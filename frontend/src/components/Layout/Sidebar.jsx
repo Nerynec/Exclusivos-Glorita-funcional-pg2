@@ -90,7 +90,7 @@ export default function Sidebar() {
             style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}
             onClick={alternarTema}
           >
-            {tema === 'oscuro' ? '☀️ Modo claro' : '🌙 Modo oscuro'}
+            {tema === 'oscuro' ? ' Modo claro' : ' Modo oscuro'}
           </button>
           <div className="sidebar-copyright">
             © {new Date().getFullYear()} Nery Orlando Martin Vasquez.<br />Todos los derechos reservados.
