@@ -496,5 +496,8 @@ tbody tr:hover { background: var(--surface-muted); }
     left: 0;
     width: 100%;
     padding: 24px;
+    /* Fondo blanco fijo: el recibo debe imprimirse igual sin importar si
+       el modo oscuro está activo en la pantalla. */
+    background: #fff;
   }
 }

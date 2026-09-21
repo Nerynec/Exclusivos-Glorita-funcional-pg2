@@ -13,7 +13,7 @@ export default function ReciboVenta({ venta }) {
           <img src="/logo-glorita.png" alt="Exclusivos Glorita" style={{ width: 64, height: 64, borderRadius: '50%' }} />
           <h2 style={{ margin: '8px 0 2px', fontSize: 18 }}>Exclusivos Glorita</h2>
           <div style={{ fontSize: 11 }}>San Lucas Tolimán, Sololá</div>
-          <div style={{ fontSize: 11 }}>Marroquinería artesanal en cuero</div>
+          
         </div>
 
         <hr style={{ border: 'none', borderTop: '1px dashed #000' }} />

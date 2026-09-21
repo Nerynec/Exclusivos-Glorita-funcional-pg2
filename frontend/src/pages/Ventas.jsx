@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCarrito } from '../context/CarritoContext';
 import { generarComprobantePDF } from '../utils/generarComprobantePDF';
 import SkeletonTabla from '../components/UI/SkeletonTabla';
+import ReciboVenta from '../components/UI/ReciboVenta';
 
 export default function Ventas() {
   const { esAdministrador } = useAuth();
@@ -267,8 +268,11 @@ export default function Ventas() {
                 ? <span className="badge badge-neutral">Esta venta está anulada</span>
                 : <span className="badge badge-success">Venta completada</span>}
               <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn btn-secondary" onClick={() => window.print()}>
+                  🖨 Imprimir
+                </button>
                 <button className="btn btn-secondary" onClick={descargarComprobante} disabled={generandoPDF}>
-                  {generandoPDF ? 'Generando…' : '⬇ Descargar comprobante PDF'}
+                  {generandoPDF ? 'Generando…' : '⬇ Descargar PDF'}
                 </button>
                 {esAdministrador && detalleVenta.Estado !== 'ANULADA' && (
                   <button className="btn btn-danger" onClick={handleAnular} disabled={anulando}>
@@ -280,6 +284,11 @@ export default function Ventas() {
           </>
         )}
       </Modal>
+
+      {/* Oculto en pantalla (ver .receipt-print-area en global.css); al usar
+          el botón "Imprimir" de arriba, es lo único que el navegador muestra
+          en la vista de impresión, aislado del resto de la interfaz. */}
+      <ReciboVenta venta={detalleVenta} />
 
       {mensaje && <div className={`toast ${mensaje.tipo}`}>{mensaje.texto}</div>}
     </AppLayout>
