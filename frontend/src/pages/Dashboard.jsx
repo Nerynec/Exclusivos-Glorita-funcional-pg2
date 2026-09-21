@@ -135,6 +135,13 @@ export default function Dashboard() {
     unidades: p.UnidadesVendidas,
   }));
 
+  // Con "|| []" por si el backend desplegado todavía no tiene estos dos
+  // campos (por ejemplo, si el frontend se actualizó antes que el backend):
+  // así la página se ve con esas secciones vacías en vez de romperse por
+  // completo con una pantalla en blanco.
+  const alertasInventario = datos?.alertasInventario || [];
+  const ultimasVentas = datos?.ultimasVentas || [];
+
   // Salud de inventario: qué proporción del catálogo activo está en cada
   // situación de stock. Se distinguen tres estados en vez de dos, para que
   // coincida con las tarjetas "Stock bajo" y "Agotados" de arriba (antes
@@ -366,7 +373,7 @@ export default function Dashboard() {
           <div className="dashboard-bottom-grid" style={{ gap: 20 }}>
             <div className="card" style={{ padding: 22 }}>
               <h3 style={{ fontSize: 16, marginBottom: 14 }}>Alertas de inventario</h3>
-              {datos.alertasInventario.length === 0 ? (
+              {alertasInventario.length === 0 ? (
                 <div className="empty-state">Todos los productos tienen stock suficiente.</div>
               ) : (
                 <table>
@@ -374,7 +381,7 @@ export default function Dashboard() {
                     <tr><th>Producto</th><th>Estado</th><th>Stock actual</th><th>Stock mínimo</th></tr>
                   </thead>
                   <tbody>
-                    {datos.alertasInventario.map((p) => (
+                    {alertasInventario.map((p) => (
                       <tr key={p.Nombre}>
                         <td>{p.Nombre}</td>
                         <td>
@@ -393,7 +400,7 @@ export default function Dashboard() {
 
             <div className="card" style={{ padding: 22 }}>
               <h3 style={{ fontSize: 16, marginBottom: 14 }}>Últimas ventas</h3>
-              {datos.ultimasVentas.length === 0 ? (
+              {ultimasVentas.length === 0 ? (
                 <div className="empty-state">Aún no hay ventas registradas.</div>
               ) : (
                 <table>
@@ -401,7 +408,7 @@ export default function Dashboard() {
                     <tr><th>Venta</th><th>Fecha</th><th>Productos</th><th>Cant.</th><th>Total</th></tr>
                   </thead>
                   <tbody>
-                    {datos.ultimasVentas.map((v) => (
+                    {ultimasVentas.map((v) => (
                       <tr key={v.VentaId}>
                         <td>{v.NumeroVenta}</td>
                         <td>{formatearFechaHora(v.FechaVenta)}</td>
