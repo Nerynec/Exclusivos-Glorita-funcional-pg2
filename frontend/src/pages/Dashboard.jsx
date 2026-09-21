@@ -239,7 +239,7 @@ export default function Dashboard() {
               }
             />
             <StatCard
-              label="Ticket promedio"
+              label="Promedio"
               value={formatearMoneda(ticketPromedioMes)}
               hint="por venta, este mes"
             />
