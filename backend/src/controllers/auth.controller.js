@@ -107,6 +107,22 @@ async function cambiarPassword(req, res, next) {
   }
 }
 
+// POST /api/auth/logout
+async function cerrarSesion(req, res, next) {
+  try {
+    const pool = await getPool();
+    // Guardamos la fecha/hora actual como "punto de corte": el middleware
+    // de autenticación va a rechazar cualquier token firmado ANTES de este
+    // momento, aunque ese token todavía no haya expirado por su cuenta.
+    // Así, el token que se estaba usando queda inválido de inmediato al
+    // cerrar sesión, no solo cuando se borra del navegador.
+    await pool.query('UPDATE "Usuarios" SET "TokenInvalidoDesde" = NOW() WHERE "UsuarioId" = $1', [req.usuario.id]);
+    return res.json({ mensaje: 'Sesión cerrada correctamente.' });
+  } catch (err) {
+    return next(err);
+  }
+}
+
 // PUT /api/auth/foto
 async function actualizarFoto(req, res, next) {
   try {
@@ -130,4 +146,4 @@ async function actualizarFoto(req, res, next) {
   }
 }
 
-module.exports = { login, perfil, cambiarPassword, actualizarFoto };
+module.exports = { login, perfil, cambiarPassword, actualizarFoto, cerrarSesion };

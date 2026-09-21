@@ -17,10 +17,21 @@ export function AuthProvider({ children }) {
     return data.usuario;
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('glorita_token');
-    localStorage.removeItem('glorita_usuario');
-    setUsuario(null);
+  const logout = useCallback(async () => {
+    try {
+      // Avisamos al backend para que invalide este token de inmediato del
+      // lado del servidor (no solo borrarlo del navegador). Si esta
+      // petición falla (sin internet, servidor caído, etc.) igual
+      // cerramos la sesión localmente para no dejar a la persona
+      // "trabada" sin poder salir.
+      await api.post('/auth/logout');
+    } catch {
+      // Se ignora: el cierre de sesión local sigue adelante de todas formas.
+    } finally {
+      localStorage.removeItem('glorita_token');
+      localStorage.removeItem('glorita_usuario');
+      setUsuario(null);
+    }
   }, []);
 
   // Actualiza la foto de perfil en memoria y en localStorage sin necesidad
