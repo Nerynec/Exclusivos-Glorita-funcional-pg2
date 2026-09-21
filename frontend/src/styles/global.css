@@ -456,6 +456,33 @@ tbody tr:hover { background: var(--surface-muted); }
   line-height: 1;
 }
 
+/* ---------- Estados de carga tipo "skeleton" ---------- */
+/* Reemplaza los spinners genéricos en pantallas con estructura conocida
+   (Panel general, etc.): bloques del mismo tamaño/forma que el contenido
+   real, con un brillo que se desliza, para que se perciba que algo
+   específico está por aparecer en vez de un giro sin contexto. */
+.skeleton {
+  background: linear-gradient(100deg, var(--surface-muted) 30%, var(--border) 50%, var(--surface-muted) 70%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: skeletonShimmer 1.4s ease-in-out infinite;
+}
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; opacity: 0.6; }
+}
+
+/* Variante clara del spinner, para usarlo sobre fondos de color (botón
+   primario, fondo oscuro del login) donde el spinner normal (que usa
+   tonos --saddle) no tendría suficiente contraste. */
+.spinner-light {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+}
+
 /* ---------- Comprobante de venta imprimible ---------- */
 .receipt-print-area { display: none; }
 

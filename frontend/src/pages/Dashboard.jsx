@@ -169,7 +169,42 @@ export default function Dashboard() {
 
   return (
     <AppLayout title="Panel general" subtitle="Resumen del negocio en tiempo real">
-      {cargando && <div className="empty-state"><div className="spinner" style={{ margin: '0 auto' }} /></div>}
+      {cargando && (
+        <div aria-busy="true" aria-label="Cargando panel general">
+          <div
+            className="dashboard-stats-row"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}
+          >
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="card" style={{ padding: '20px 22px' }}>
+                <div className="skeleton" style={{ width: '60%', height: 11, marginBottom: 14 }} />
+                <div className="skeleton" style={{ width: '45%', height: 28, marginBottom: 10 }} />
+                <div className="skeleton" style={{ width: '70%', height: 11 }} />
+              </div>
+            ))}
+          </div>
+
+          <div className="dashboard-charts-grid" style={{ gap: 20, marginBottom: 20 }}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="card" style={{ padding: 22 }}>
+                <div className="skeleton" style={{ width: '50%', height: 14, marginBottom: 18 }} />
+                <div className="skeleton" style={{ width: '100%', height: 190 }} />
+              </div>
+            ))}
+          </div>
+
+          <div className="dashboard-bottom-grid" style={{ gap: 20 }}>
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="card" style={{ padding: 22 }}>
+                <div className="skeleton" style={{ width: '40%', height: 14, marginBottom: 16 }} />
+                {Array.from({ length: 4 }).map((__, j) => (
+                  <div key={j} className="skeleton" style={{ width: '100%', height: 34, marginBottom: 8, borderRadius: 6 }} />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="card" style={{ padding: 18, color: 'var(--danger)' }}>
@@ -204,7 +239,7 @@ export default function Dashboard() {
               }
             />
             <StatCard
-              label="Promedio de venta mensual"
+              label="Ticket promedio"
               value={formatearMoneda(ticketPromedioMes)}
               hint="por venta, este mes"
             />
