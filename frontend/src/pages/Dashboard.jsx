@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  BarChart, Bar, LabelList,
+  BarChart, Bar, LabelList, PieChart, Pie, Cell,
 } from 'recharts';
 import AppLayout from '../components/Layout/AppLayout';
 import StatCard from '../components/UI/StatCard';
@@ -79,6 +79,27 @@ function PuntoActivoVentas(props) {
   );
 }
 
+function TooltipSalud({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  const item = payload[0];
+  return (
+    <div
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 8,
+        padding: '8px 12px',
+        boxShadow: 'var(--shadow-md)',
+      }}
+    >
+      <div style={{ fontSize: 11.5, color: 'var(--espresso-soft)', marginBottom: 2 }}>{item.name}</div>
+      <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--espresso)' }}>
+        {item.value} {item.value === 1 ? 'producto' : 'productos'}
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const [datos, setDatos] = useState(null);
   const [error, setError] = useState('');
@@ -97,10 +118,32 @@ export default function Dashboard() {
   }));
 
   const topProductosChart = (datos?.topProductos || []).map((p) => ({
-    nombre: p.Nombre.length > 16 ? `${p.Nombre.slice(0, 16)}…` : p.Nombre,
+    nombre: p.Nombre.length > 13 ? `${p.Nombre.slice(0, 13)}…` : p.Nombre,
     nombreCompleto: p.Nombre,
     unidades: p.UnidadesVendidas,
   }));
+
+  // Salud de inventario: qué proporción del catálogo activo está dentro
+  // de su mínimo de stock vs. cuántos ya están por debajo — el mismo dato
+  // que ya mostraba la tarjeta "Stock bajo", pero como proporción del total.
+  const totalProductos = datos?.TotalProductos || 0;
+  const stockBajoCount = datos?.ProductosStockBajo || 0;
+  const stockSaludable = Math.max(totalProductos - stockBajoCount, 0);
+  const pctSaludable = totalProductos > 0 ? Math.round((stockSaludable / totalProductos) * 100) : 100;
+  const saludData = [
+    { name: 'Stock saludable', value: stockSaludable, color: 'var(--success)' },
+    { name: 'Stock bajo', value: stockBajoCount, color: 'var(--danger)' },
+  ].filter((d) => d.value > 0);
+
+  // Variación de ventas vs. el mes anterior: la métrica que realmente
+  // ayuda a decidir (¿vamos mejor o peor que el mes pasado?), no solo el
+  // monto absoluto. Sin mes anterior con ventas no hay una variación
+  // porcentual honesta que mostrar, así que en ese caso se omite el badge
+  // en vez de inventar un "+100%" sin base de comparación real.
+  const montoMes = Number(datos?.MontoVentasMes || 0);
+  const montoMesAnterior = Number(datos?.MontoVentasMesAnterior || 0);
+  const variacionMes = montoMesAnterior > 0 ? ((montoMes - montoMesAnterior) / montoMesAnterior) * 100 : null;
+  const ticketPromedioMes = Number(datos?.TicketPromedioMes || 0);
 
   return (
     <AppLayout title="Panel general" subtitle="Resumen del negocio en tiempo real">
@@ -114,9 +157,32 @@ export default function Dashboard() {
 
       {datos && (
         <>
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 24 }}>
-            <StatCard label="Ventas de hoy" value={datos.VentasHoy} hint={formatearMoneda(datos.MontoVentasHoy)} />
-            <StatCard label="Ventas del mes" value={formatearMoneda(datos.MontoVentasMes)} />
+          <div className="dashboard-stats-row" style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 24 }}>
+            <StatCard
+              label="Ventas de hoy"
+              value={datos.VentasHoy}
+              hint={formatearMoneda(datos.MontoVentasHoy)}
+              tendencia={ventasChart.map((d) => d.monto)}
+            />
+            <StatCard
+              label="Ventas del mes"
+              value={formatearMoneda(datos.MontoVentasMes)}
+              tone={variacionMes === null ? 'default' : variacionMes >= 0 ? 'success' : 'danger'}
+              hint={
+                variacionMes === null ? (
+                  'sin datos del mes anterior'
+                ) : (
+                  <>
+                    {variacionMes >= 0 ? '▲' : '▼'} {Math.abs(variacionMes).toFixed(1)}% vs. mes anterior
+                  </>
+                )
+              }
+            />
+            <StatCard
+              label="Ticket promedio"
+              value={formatearMoneda(ticketPromedioMes)}
+              hint="por venta, este mes"
+            />
             <StatCard label="Productos activos" value={datos.TotalProductos} hint={`${datos.TotalUnidadesStock} unidades en stock`} />
             <StatCard
               label="Stock bajo"
@@ -180,40 +246,91 @@ export default function Dashboard() {
                 <div className="empty-state">Sin datos de ventas todavía.</div>
               ) : (
                 <ResponsiveContainer width="100%" height={240}>
-                  <BarChart
-                    data={topProductosChart}
-                    layout="vertical"
-                    margin={{ top: 4, right: 28, left: 10, bottom: 4 }}
-                    barCategoryGap={10}
-                  >
-                    <CartesianGrid strokeDasharray="none" stroke="var(--border)" horizontal={false} />
+                  <BarChart data={topProductosChart} margin={{ top: 22, right: 8, left: 24, bottom: 28 }} barCategoryGap={18}>
+                    <defs>
+                      <linearGradient id="colorProductos" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="var(--info)" stopOpacity={0.95} />
+                        <stop offset="100%" stopColor="var(--info)" stopOpacity={0.45} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="none" stroke="var(--border)" vertical={false} />
                     <XAxis
-                      type="number"
-                      stroke="var(--border)"
-                      tick={{ fill: 'var(--espresso-soft)', fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={false}
-                      allowDecimals={false}
-                    />
-                    <YAxis
                       dataKey="nombre"
-                      type="category"
                       stroke="var(--border)"
-                      tick={{ fill: 'var(--espresso-soft)', fontSize: 11.5 }}
+                      tick={{ fill: 'var(--espresso-soft)', fontSize: 10.5 }}
                       tickLine={false}
-                      axisLine={false}
-                      width={100}
+                      axisLine={{ stroke: 'var(--border)' }}
+                      interval={0}
+                      angle={-35}
+                      textAnchor="end"
+                      height={50}
                     />
+                    <YAxis hide allowDecimals={false} />
                     <Tooltip content={<TooltipProductos />} cursor={{ fill: 'var(--surface-muted)' }} />
-                    <Bar dataKey="unidades" fill="var(--info)" radius={[0, 4, 4, 0]} maxBarSize={22}>
+                    <Bar dataKey="unidades" fill="url(#colorProductos)" radius={[4, 4, 0, 0]} maxBarSize={34}>
                       <LabelList
                         dataKey="unidades"
-                        position="right"
+                        position="top"
                         style={{ fill: 'var(--espresso-soft)', fontSize: 12, fontWeight: 600 }}
                       />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
+              )}
+            </div>
+
+            <div className="card" style={{ padding: 22 }}>
+              <h3 style={{ fontSize: 16, marginBottom: 16 }}>Salud de inventario</h3>
+              {totalProductos === 0 ? (
+                <div className="empty-state">Aún no hay productos registrados.</div>
+              ) : (
+                <>
+                  <div style={{ position: 'relative' }}>
+                    <ResponsiveContainer width="100%" height={190}>
+                      <PieChart>
+                        <Pie
+                          data={saludData}
+                          dataKey="value"
+                          nameKey="name"
+                          innerRadius={58}
+                          outerRadius={78}
+                          startAngle={90}
+                          endAngle={-270}
+                          paddingAngle={saludData.length > 1 ? 3 : 0}
+                          stroke="var(--surface)"
+                          strokeWidth={2}
+                          isAnimationActive={false}
+                        >
+                          {saludData.map((d) => (
+                            <Cell key={d.name} fill={d.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip content={<TooltipSalud />} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div
+                      style={{
+                        position: 'absolute', inset: 0, top: -10, display: 'flex', flexDirection: 'column',
+                        alignItems: 'center', justifyContent: 'center', pointerEvents: 'none',
+                      }}
+                    >
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 600, color: 'var(--espresso)' }}>
+                        {pctSaludable}%
+                      </div>
+                      <div style={{ fontSize: 11.5, color: 'var(--espresso-soft)' }}>saludable</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 18, marginTop: 4, flexWrap: 'wrap' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--espresso-soft)' }}>
+                      <span style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--success)', display: 'inline-block' }} />
+                      Saludable: {stockSaludable}
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--espresso-soft)' }}>
+                      <span style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--danger)', display: 'inline-block' }} />
+                      Stock bajo: {stockBajoCount}
+                    </span>
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -231,8 +348,8 @@ export default function Dashboard() {
                   {datos.stockBajo.map((p) => (
                     <tr key={p.Nombre}>
                       <td>{p.Nombre}</td>
-                      <td><span className="badge badge-danger">{p.StockActual}</span></td>
-                      <td>{p.StockMinimo}</td>
+                      <td style={{ fontVariantNumeric: 'tabular-nums' }}><span className="badge badge-danger">{p.StockActual}</span></td>
+                      <td style={{ fontVariantNumeric: 'tabular-nums' }}>{p.StockMinimo}</td>
                     </tr>
                   ))}
                 </tbody>

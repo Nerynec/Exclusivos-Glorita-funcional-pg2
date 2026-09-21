@@ -14,7 +14,9 @@ async function resumen(req, res, next) {
         (SELECT COUNT(*) FROM "Productos" WHERE "Activo" = true AND "StockActual" <= "StockMinimo") AS "ProductosStockBajo",
         (SELECT COUNT(*) FROM "Ventas" WHERE "Estado" = 'COMPLETADA' AND CAST("FechaVenta" AS DATE) = CAST($1 AS DATE)) AS "VentasHoy",
         (SELECT COALESCE(SUM("Total"),0) FROM "Ventas" WHERE "Estado" = 'COMPLETADA' AND CAST("FechaVenta" AS DATE) = CAST($1 AS DATE)) AS "MontoVentasHoy",
-        (SELECT COALESCE(SUM("Total"),0) FROM "Ventas" WHERE "Estado" = 'COMPLETADA' AND EXTRACT(MONTH FROM "FechaVenta") = EXTRACT(MONTH FROM $1::timestamp) AND EXTRACT(YEAR FROM "FechaVenta") = EXTRACT(YEAR FROM $1::timestamp)) AS "MontoVentasMes"
+        (SELECT COALESCE(SUM("Total"),0) FROM "Ventas" WHERE "Estado" = 'COMPLETADA' AND EXTRACT(MONTH FROM "FechaVenta") = EXTRACT(MONTH FROM $1::timestamp) AND EXTRACT(YEAR FROM "FechaVenta") = EXTRACT(YEAR FROM $1::timestamp)) AS "MontoVentasMes",
+        (SELECT COALESCE(SUM("Total"),0) FROM "Ventas" WHERE "Estado" = 'COMPLETADA' AND "FechaVenta" >= (date_trunc('month', $1::timestamp) - INTERVAL '1 month') AND "FechaVenta" < date_trunc('month', $1::timestamp)) AS "MontoVentasMesAnterior",
+        (SELECT COALESCE(AVG("Total"),0) FROM "Ventas" WHERE "Estado" = 'COMPLETADA' AND EXTRACT(MONTH FROM "FechaVenta") = EXTRACT(MONTH FROM $1::timestamp) AND EXTRACT(YEAR FROM "FechaVenta") = EXTRACT(YEAR FROM $1::timestamp)) AS "TicketPromedioMes"
     `, [ahora]);
 
     const ventasUltimos7Dias = await pool.query(`
