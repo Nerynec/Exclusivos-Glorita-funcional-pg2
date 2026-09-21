@@ -10,6 +10,7 @@ router.get('/', ctrl.listar);
 router.get('/:id', ctrl.obtener);
 router.post('/', requireRole('Administrador'), ctrl.crear);
 router.put('/:id', requireRole('Administrador'), ctrl.actualizar);
+router.patch('/:id/activo', requireRole('Administrador'), ctrl.cambiarEstado);
 router.delete('/:id', requireRole('Administrador'), ctrl.eliminar);
 
 module.exports = router;

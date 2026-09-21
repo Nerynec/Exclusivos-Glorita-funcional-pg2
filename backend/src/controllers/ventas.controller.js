@@ -101,14 +101,21 @@ async function crear(req, res, next) {
     }
 
     const total = subtotal;
-    const numeroVenta = `V-${Date.now()}`;
 
+    // El número de venta se arma a partir del propio VentaId (que Postgres
+    // asigna al insertar), en vez de un timestamp en milisegundos: eso daba
+    // números larguísimos e ilegibles como "V-1789858115570". Como todavía
+    // no conocemos el VentaId antes de insertar, se guarda con un valor
+    // temporal único y se corrige en la misma transacción justo después.
+    const numeroTemporal = `TEMP-${Date.now()}`;
     const ventaResult = await client.query(`
       INSERT INTO "Ventas" ("NumeroVenta", "ClienteNombre", "UsuarioId", "Subtotal", "Total", "FechaVenta")
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING "VentaId"
-    `, [numeroVenta, clienteNombre || 'Consumidor final', req.usuario.id, subtotal, total, ahora]);
+    `, [numeroTemporal, clienteNombre || 'Consumidor final', req.usuario.id, subtotal, total, ahora]);
     const ventaId = ventaResult.rows[0].VentaId;
+    const numeroVenta = `V-${String(ventaId).padStart(6, '0')}`;
+    await client.query('UPDATE "Ventas" SET "NumeroVenta" = $1 WHERE "VentaId" = $2', [numeroVenta, ventaId]);
 
     for (const linea of detalleCalculado) {
       await client.query(`

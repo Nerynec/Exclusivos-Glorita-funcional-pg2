@@ -8,7 +8,7 @@ import { redimensionarImagen } from '../utils/redimensionarImagen';
 
 const PRODUCTO_VACIO = {
   codigo: '', nombre: '', descripcion: '', categoriaId: '', marca: '', talla: '',
-  precioCosto: '', precioVenta: '', stockActual: '', stockMinimo: '5', imagenUrl: '',
+  precioCosto: '', precioVenta: '', stockActual: '', stockMinimo: '5', imagenUrl: '', activo: true,
 };
 
 function IconoCuero() {
@@ -27,6 +27,7 @@ export default function Productos() {
   const [categorias, setCategorias] = useState([]);
   const [buscar, setBuscar] = useState('');
   const [categoriaFiltro, setCategoriaFiltro] = useState('');
+  const [estadoFiltro, setEstadoFiltro] = useState('activos');
   const [cargando, setCargando] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [editando, setEditando] = useState(null);
@@ -44,14 +45,14 @@ export default function Productos() {
 
   const cargarProductos = useCallback(() => {
     setCargando(true);
-    const params = {};
+    const params = { estado: estadoFiltro };
     if (buscar) params.buscar = buscar;
     if (categoriaFiltro) params.categoria = categoriaFiltro;
     api.get('/productos', { params })
       .then((res) => setProductos(res.data))
       .catch(() => setMensaje({ tipo: 'error', texto: 'No se pudieron cargar los productos.' }))
       .finally(() => setCargando(false));
-  }, [buscar, categoriaFiltro]);
+  }, [buscar, categoriaFiltro, estadoFiltro]);
 
   useEffect(() => {
     cargarCategorias();
@@ -82,6 +83,7 @@ export default function Productos() {
       stockActual: producto.StockActual,
       stockMinimo: producto.StockMinimo,
       imagenUrl: producto.ImagenUrl || '',
+      activo: producto.Activo,
     });
     setModalAbierto(true);
   }
@@ -126,10 +128,21 @@ export default function Productos() {
   async function handleEliminar(producto) {
     if (!window.confirm(`¿Eliminar "${producto.Nombre}"? Si tiene movimientos asociados, se desactivará en su lugar.`)) return;
     try {
-      await api.delete(`/productos/${producto.ProductoId}`);
+      const { data } = await api.delete(`/productos/${producto.ProductoId}`);
+      setMensaje({ tipo: 'success', texto: data.mensaje });
       cargarProductos();
     } catch (err) {
       setMensaje({ tipo: 'error', texto: err.response?.data?.mensaje || 'No se pudo eliminar el producto.' });
+    }
+  }
+
+  async function handleReactivar(producto) {
+    try {
+      await api.patch(`/productos/${producto.ProductoId}/activo`, { activo: true });
+      setMensaje({ tipo: 'success', texto: `"${producto.Nombre}" fue reactivado.` });
+      cargarProductos();
+    } catch (err) {
+      setMensaje({ tipo: 'error', texto: err.response?.data?.mensaje || 'No se pudo reactivar el producto.' });
     }
   }
 
@@ -218,6 +231,17 @@ export default function Productos() {
           <option value="">Todas las categorías</option>
           {categorias.map((c) => <option key={c.CategoriaId} value={c.CategoriaId}>{c.Nombre}</option>)}
         </select>
+        {esAdministrador && (
+          <select
+            value={estadoFiltro}
+            onChange={(e) => setEstadoFiltro(e.target.value)}
+            style={{ padding: '9px 12px', border: '1px solid var(--border)', borderRadius: 8, minWidth: 180 }}
+          >
+            <option value="activos">Solo activos</option>
+            <option value="inactivos">Solo desactivados</option>
+            <option value="todos">Todos</option>
+          </select>
+        )}
       </div>
 
       <div className={cargando || productos.length === 0 ? 'card' : ''} style={cargando || productos.length === 0 ? { overflowX: 'auto' } : undefined}>
@@ -228,9 +252,11 @@ export default function Productos() {
         ) : (
           <div className="product-grid">
             {productos.map((p) => (
-              <div className="product-card" key={p.ProductoId}>
+              <div className="product-card" key={p.ProductoId} style={!p.Activo ? { opacity: 0.65 } : undefined}>
                 <div className="product-card-image">
-                  {p.StockBajo && <span className="product-badge">Stock bajo</span>}
+                  {!p.Activo
+                    ? <span className="product-badge" style={{ background: 'var(--espresso-soft)' }}>Inactivo</span>
+                    : p.StockBajo && <span className="product-badge">Stock bajo</span>}
                   {p.ImagenUrl
                     ? <img src={p.ImagenUrl} alt={p.Nombre} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
                     : null}
@@ -250,14 +276,18 @@ export default function Productos() {
                     className="btn btn-primary"
                     style={{ marginTop: 8, justifyContent: 'center' }}
                     onClick={() => handleAgregarCarrito(p)}
-                    disabled={p.StockActual <= 0}
+                    disabled={p.StockActual <= 0 || !p.Activo}
                   >
                     🛒 Agregar al carrito
                   </button>
                   {esAdministrador && (
                     <div className="product-card-actions">
                       <button className="btn btn-secondary" onClick={() => abrirEditar(p)}>Editar</button>
-                      <button className="btn btn-danger" onClick={() => handleEliminar(p)}>Eliminar</button>
+                      {p.Activo ? (
+                        <button className="btn btn-danger" onClick={() => handleEliminar(p)}>Eliminar</button>
+                      ) : (
+                        <button className="btn btn-secondary" onClick={() => handleReactivar(p)}>Reactivar</button>
+                      )}
                     </div>
                   )}
                 </div>

@@ -1,14 +1,22 @@
 const { getPool } = require('../config/db');
 const { ahoraGuatemala } = require('../utils/fechaGuatemala');
 
-// GET /api/productos?buscar=&categoria=&marca=&talla=  (REQ7 - Búsqueda de productos)
+// GET /api/productos?buscar=&categoria=&marca=&talla=&estado=  (REQ7 - Búsqueda de productos)
+// "estado" controla si se listan productos activos, inactivos (desactivados
+// por el soft-delete) o todos. Por defecto solo activos, para no cambiar el
+// comportamiento que ya tenía el catálogo normal.
 async function listar(req, res, next) {
   try {
-    const { buscar, categoria, marca, talla } = req.query;
+    const { buscar, categoria, marca, talla, estado } = req.query;
     const pool = await getPool();
 
     const valores = [];
-    let where = 'WHERE p."Activo" = true';
+    let where = 'WHERE 1=1';
+    if (estado === 'inactivos') {
+      where += ' AND p."Activo" = false';
+    } else if (estado !== 'todos') {
+      where += ' AND p."Activo" = true';
+    }
 
     if (buscar) {
       valores.push(`%${buscar}%`);
@@ -33,7 +41,7 @@ async function listar(req, res, next) {
     const result = await pool.query(`
       SELECT p."ProductoId", p."Codigo", p."Nombre", p."Descripcion", p."Marca", p."Talla",
              p."PrecioCosto", p."PrecioVenta", p."StockActual", p."StockMinimo",
-             p."ImagenUrl", p."CategoriaId", c."Nombre" AS "CategoriaNombre",
+             p."ImagenUrl", p."CategoriaId", p."Activo", c."Nombre" AS "CategoriaNombre",
              CASE WHEN p."StockActual" <= p."StockMinimo" THEN true ELSE false END AS "StockBajo"
       FROM "Productos" p
       LEFT JOIN "Categorias" c ON c."CategoriaId" = p."CategoriaId"
@@ -174,4 +182,30 @@ async function eliminar(req, res, next) {
   }
 }
 
-module.exports = { listar, obtener, crear, actualizar, eliminar };
+// PATCH /api/productos/:id/activo  (reactivar o desactivar sin tocar el resto de los campos)
+// "actualizar" (PUT) exige mandar el formulario completo, así que reutilizarla
+// para solo reactivar un producto arriesga pisar nombre/precios con lo que
+// venga en ese body. Este endpoint solo toca "Activo".
+async function cambiarEstado(req, res, next) {
+  try {
+    const { activo } = req.body;
+    if (typeof activo !== 'boolean') {
+      return res.status(400).json({ mensaje: 'El campo "activo" debe ser true o false.' });
+    }
+
+    const pool = await getPool();
+    const result = await pool.query(
+      'UPDATE "Productos" SET "Activo" = $1, "FechaActualizacion" = $2 WHERE "ProductoId" = $3',
+      [activo, ahoraGuatemala(), req.params.id],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado.' });
+    }
+    return res.json({ mensaje: activo ? 'Producto reactivado correctamente.' : 'Producto desactivado correctamente.' });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+module.exports = { listar, obtener, crear, actualizar, eliminar, cambiarEstado };
