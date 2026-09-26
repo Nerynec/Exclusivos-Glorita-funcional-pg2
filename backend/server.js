@@ -17,14 +17,12 @@ const usuariosRoutes = require('./src/routes/usuarios.routes');
 const app = express();
 
 // Render (y la mayoría de hostings) ponen el backend detrás de un proxy
-// inverso: la petición real le llega a ese proxy, y este se la reenvía a
-// nuestro servidor agregando un header "X-Forwarded-For" con la IP
-// original del usuario. Sin esto, Express no confía en ese header (por
-// seguridad, cualquiera podría inventarlo) y express-rate-limit no puede
-// identificar IPs de forma confiable — rompía silenciosamente las
-// peticiones a /api/auth/login y dejaba el login colgado para siempre.
-// "1" le dice a Express que confíe en un solo salto de proxy (el de
-// Render), ni más ni menos.
+// inverso, que reenvía las peticiones agregando un header
+// "X-Forwarded-For" con la IP original del usuario. Sin esto, Express no
+// confía en ese header y express-rate-limit no puede identificar IPs de
+// forma confiable (rompía las peticiones al login con un error de
+// validación). "1" le dice a Express que confíe en un solo salto de
+// proxy — el de Render — ni más ni menos.
 app.set('trust proxy', 1);
 
 // Cabeceras de seguridad HTTP estándar (protege contra clickjacking,
@@ -49,20 +47,6 @@ const limitadorLogin = rateLimit({
   legacyHeaders: false,
 });
 app.use('/api/auth/login', limitadorLogin);
-
-// Límite de intentos para el código de verificación (2FA): además del
-// tope de 5 intentos por código que ya controla el propio endpoint,
-// esto evita que alguien mande cientos de peticiones automatizadas
-// probando códigos o pidiendo reenvíos por correo.
-const limitadorCodigo = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: { mensaje: 'Demasiados intentos. Esperá unos minutos e intentá de nuevo.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use('/api/auth/verificar-codigo', limitadorCodigo);
-app.use('/api/auth/reenviar-codigo', limitadorCodigo);
 
 app.get('/api/health', (req, res) => {
   res.json({ estado: 'ok', servicio: 'Glorita API', fecha: new Date().toISOString() });

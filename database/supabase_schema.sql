@@ -26,21 +26,6 @@ CREATE TABLE "Usuarios" (
     "TokenInvalidoDesde" TIMESTAMPTZ NULL
 );
 
--- ---------- 2.1 CODIGOS DE VERIFICACION (2FA por correo electrónico) ----------
-CREATE TABLE "CodigosVerificacion" (
-    "CodigoId"      SERIAL PRIMARY KEY,
-    "UsuarioId"     INTEGER NOT NULL REFERENCES "Usuarios"("UsuarioId") ON DELETE CASCADE,
-    -- El código de 6 dígitos nunca se guarda en texto plano, igual que la
-    -- contraseña: se guarda su hash con bcrypt.
-    "CodigoHash"    VARCHAR(255) NOT NULL,
-    "Intentos"      INTEGER NOT NULL DEFAULT 0,
-    "Usado"         BOOLEAN NOT NULL DEFAULT false,
-    "ExpiraEn"      TIMESTAMPTZ NOT NULL,
-    "FechaCreacion" TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX "IX_CodigosVerificacion_UsuarioId" ON "CodigosVerificacion" ("UsuarioId");
-
 -- ---------- 3. CATEGORIAS ----------
 CREATE TABLE "Categorias" (
     "CategoriaId" SERIAL PRIMARY KEY,
