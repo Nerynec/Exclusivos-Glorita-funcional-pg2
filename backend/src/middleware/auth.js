@@ -53,4 +53,29 @@ function requireRole(...rolesPermitidos) {
   };
 }
 
-module.exports = { requireAuth, requireRole };
+// Middleware para los pasos intermedios del login en dos pasos (2FA):
+// registrar teléfono, reenviar código y verificar código. Estos pasos NO
+// usan el token de sesión normal (todavía no se completó el login), sino
+// un token "pre2fa" de vida corta que solo certifica que la contraseña ya
+// fue validada. Nunca sirve para acceder al resto de la API.
+function requierePreAuth(req, res, next) {
+  const header = req.headers.authorization || '';
+  const [tipo, token] = header.split(' ');
+
+  if (tipo !== 'Bearer' || !token) {
+    return res.status(401).json({ mensaje: 'Falta el token de verificación. Iniciá sesión de nuevo.' });
+  }
+
+  try {
+    const payload = verificarToken(token);
+    if (payload.tipo !== 'pre2fa') {
+      return res.status(401).json({ mensaje: 'Token inválido para esta operación.' });
+    }
+    req.preAuth = payload;
+    return next();
+  } catch (err) {
+    return res.status(401).json({ mensaje: 'Tu sesión de verificación expiró. Iniciá sesión de nuevo.' });
+  }
+}
+
+module.exports = { requireAuth, requireRole, requierePreAuth };
