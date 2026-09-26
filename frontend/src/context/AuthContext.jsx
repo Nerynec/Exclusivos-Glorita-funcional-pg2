@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import api from '../api/axios';
 
 const AuthContext = createContext(null);
@@ -9,8 +9,40 @@ export function AuthProvider({ children }) {
     return stored ? JSON.parse(stored) : null;
   });
 
-  const login = useCallback(async (correo, contrasena) => {
+  // El token de "pre-autenticación" (segundo factor pendiente) vive solo
+  // en memoria, nunca en localStorage: es de corta duración (10 min) y no
+  // tiene sentido que sobreviva a un refresco de página — si eso pasa, la
+  // persona simplemente vuelve a iniciar sesión desde cero.
+  const preAuthTokenRef = useRef(null);
+
+  // Paso 1 del login: valida correo y contraseña. El backend manda el
+  // código de verificación al correo del usuario — nunca entrega la
+  // sesión completa en este paso, porque el doble factor de autenticación
+  // es obligatorio para todos.
+  const iniciarLogin = useCallback(async (correo, contrasena) => {
     const { data } = await api.post('/auth/login', { correo, contrasena });
+    if (data.preAuthToken) preAuthTokenRef.current = data.preAuthToken;
+    return data;
+  }, []);
+
+  const reenviarCodigo = useCallback(async () => {
+    const { data } = await api.post(
+      '/auth/reenviar-codigo',
+      {},
+      { headers: { Authorization: `Bearer ${preAuthTokenRef.current}` } },
+    );
+    return data;
+  }, []);
+
+  // Último paso: si el código de 6 dígitos es correcto, acá sí se entrega
+  // la sesión completa (token normal + datos del usuario).
+  const verificarCodigo = useCallback(async (codigo) => {
+    const { data } = await api.post(
+      '/auth/verificar-codigo',
+      { codigo },
+      { headers: { Authorization: `Bearer ${preAuthTokenRef.current}` } },
+    );
+    preAuthTokenRef.current = null;
     localStorage.setItem('glorita_token', data.token);
     localStorage.setItem('glorita_usuario', JSON.stringify(data.usuario));
     setUsuario(data.usuario);
@@ -47,7 +79,12 @@ export function AuthProvider({ children }) {
   const esAdministrador = usuario?.rol === 'Administrador';
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout, esAdministrador, actualizarFotoLocal }}>
+    <AuthContext.Provider
+      value={{
+        usuario, logout, esAdministrador, actualizarFotoLocal,
+        iniciarLogin, reenviarCodigo, verificarCodigo,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

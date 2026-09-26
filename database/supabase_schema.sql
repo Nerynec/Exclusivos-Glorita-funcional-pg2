@@ -20,8 +20,26 @@ CREATE TABLE "Usuarios" (
     "RoleId"         INTEGER NOT NULL REFERENCES "Roles"("RoleId"),
     "Activo"         BOOLEAN NOT NULL DEFAULT true,
     "FotoUrl"        TEXT NULL,
-    "FechaCreacion"  TIMESTAMP NOT NULL DEFAULT NOW()
+    "FechaCreacion"  TIMESTAMP NOT NULL DEFAULT NOW(),
+    -- Fecha/hora del último "cerrar sesión". Cualquier token JWT firmado
+    -- antes de esta marca se rechaza, aunque no haya expirado todavía.
+    "TokenInvalidoDesde" TIMESTAMPTZ NULL
 );
+
+-- ---------- 2.1 CODIGOS DE VERIFICACION (2FA por correo electrónico) ----------
+CREATE TABLE "CodigosVerificacion" (
+    "CodigoId"      SERIAL PRIMARY KEY,
+    "UsuarioId"     INTEGER NOT NULL REFERENCES "Usuarios"("UsuarioId") ON DELETE CASCADE,
+    -- El código de 6 dígitos nunca se guarda en texto plano, igual que la
+    -- contraseña: se guarda su hash con bcrypt.
+    "CodigoHash"    VARCHAR(255) NOT NULL,
+    "Intentos"      INTEGER NOT NULL DEFAULT 0,
+    "Usado"         BOOLEAN NOT NULL DEFAULT false,
+    "ExpiraEn"      TIMESTAMPTZ NOT NULL,
+    "FechaCreacion" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX "IX_CodigosVerificacion_UsuarioId" ON "CodigosVerificacion" ("UsuarioId");
 
 -- ---------- 3. CATEGORIAS ----------
 CREATE TABLE "Categorias" (

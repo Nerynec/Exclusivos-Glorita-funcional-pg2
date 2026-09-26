@@ -39,6 +39,20 @@ const limitadorLogin = rateLimit({
 });
 app.use('/api/auth/login', limitadorLogin);
 
+// Límite de intentos para el código de verificación (2FA): además del
+// tope de 5 intentos por código que ya controla el propio endpoint,
+// esto evita que alguien mande cientos de peticiones automatizadas
+// probando códigos o pidiendo reenvíos por correo.
+const limitadorCodigo = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { mensaje: 'Demasiados intentos. Esperá unos minutos e intentá de nuevo.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/auth/verificar-codigo', limitadorCodigo);
+app.use('/api/auth/reenviar-codigo', limitadorCodigo);
+
 app.get('/api/health', (req, res) => {
   res.json({ estado: 'ok', servicio: 'Glorita API', fecha: new Date().toISOString() });
 });
