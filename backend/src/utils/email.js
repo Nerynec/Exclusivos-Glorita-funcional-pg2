@@ -36,6 +36,13 @@ function obtenerTransportador() {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD,
       },
+      // Sin esto, si Gmail no responde (credenciales inválidas, el puerto
+      // SMTP bloqueado por el hosting, etc.) la conexión se queda colgada
+      // indefinidamente y el login nunca termina de cargar. Con estos
+      // límites, en 15 segundos falla con un error claro en vez de colgarse.
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 15000,
     });
   }
   return transportador;

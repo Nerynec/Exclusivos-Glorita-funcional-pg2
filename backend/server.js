@@ -16,6 +16,17 @@ const usuariosRoutes = require('./src/routes/usuarios.routes');
 
 const app = express();
 
+// Render (y la mayoría de hostings) ponen el backend detrás de un proxy
+// inverso: la petición real le llega a ese proxy, y este se la reenvía a
+// nuestro servidor agregando un header "X-Forwarded-For" con la IP
+// original del usuario. Sin esto, Express no confía en ese header (por
+// seguridad, cualquiera podría inventarlo) y express-rate-limit no puede
+// identificar IPs de forma confiable — rompía silenciosamente las
+// peticiones a /api/auth/login y dejaba el login colgado para siempre.
+// "1" le dice a Express que confíe en un solo salto de proxy (el de
+// Render), ni más ni menos.
+app.set('trust proxy', 1);
+
 // Cabeceras de seguridad HTTP estándar (protege contra clickjacking,
 // sniffing de tipo MIME, y otras cosas que el navegador revisa solo).
 app.use(helmet());
